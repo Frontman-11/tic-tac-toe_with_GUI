@@ -61,7 +61,7 @@ class T3Game:
                         print(f"Oops! Enter value among {', '.join(map(lambda num: str(num), self.moves))}")
                         continue
                 except ValueError:
-                    print(f'Oops: enter real number')
+                    print(f'Oops: Enter a real number')
                     continue
                 else:
                     self.moves.remove(player_number)
@@ -88,9 +88,19 @@ class T3Game:
 
 
 trial = True
-player1_name = input('Enter your name to play against Frontbot: ')
+while True:
+    player1_name = input('Enter your name to play against Frontbot: ')
+    try:
+        if player1_name.lower() == 'frontbot':
+            raise ValueError('Oops! Frontbot is my name. Enter your name.')
+    except ValueError as err:
+        print(err)
+        continue
+    else:
+        break
+
 player2_name = 'Frontbot'
-record = {player1_name: 0, 'Frontbot': 0, 'draw': 0}
+record = {player1_name: 0, player2_name: 0, 'draw': 0}
 
 while trial:
     template = [
@@ -109,7 +119,6 @@ while trial:
     while turn:
         if turn % 2 == 0:
             render_template(template)
-            print(f'a: {a}')
             print(player[a].movement())
             turn -= 1
             if player[a].check_status():
@@ -118,7 +127,6 @@ while trial:
                 record['draw'] += 1
         else:
             render_template(template)
-            print(f'b: {b}')
             print(player[b].movement())
             turn -= 1
             if player[b].check_status():
