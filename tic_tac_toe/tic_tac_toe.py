@@ -44,13 +44,17 @@ def winning_check(board):
 
 
 class T3Game:
-    def __init__(self, player_name, moves, board, score, win_check, player_id):
+    random_set = [{1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {1, 4, 7}, {2, 5, 8}, {3, 6, 9}, {1, 5, 9}, {3, 5, 7}]
+
+    def __init__(self, player_name, moves, board, score, my_play, win_check, player_id):
         self.player_name = player_name
         self.moves = moves
         self.board = board
         self.score = score
+        self.my_play = my_play
         self.win_check = win_check
         self.player_id = player_id
+        self.mode = 'hard'
 
     def movement(self):
         if self.player_name != 'Frontbot':
@@ -67,10 +71,43 @@ class T3Game:
                     self.moves.remove(player_number)
                     return self.update_board(player_number, self.board)
 
+        elif self.mode.lower() == 'hard':
+            self.hard_mode()
+
         else:
-            player_number = random.choice(self.moves)
-            self.moves.remove(player_number)
-            return self.update_board(player_number, self.board)
+            self.easy_mode()
+
+    def hard_mode(self):
+        random.shuffle(self.random_set)
+        for item in self.random_set:
+            _intersect = list(item & set(my_list))
+            if len(_intersect) == 1:
+                x, y = item - set(my_list)
+                if x in self.my_play and y in self.my_play:
+                    self.moves.remove(_intersect[0])
+                    self.my_play.append(_intersect[0])
+                    return self.update_board(_intersect[0], self.board)
+                elif x not in self.my_play and y not in self.my_play:
+                    self.moves.remove(_intersect[0])
+                    self.my_play.append(_intersect[0])
+                    return self.update_board(_intersect[0], self.board)
+
+            elif len(_intersect) == 2:
+                y = item - set(my_list)
+                if y in self.my_play:
+                    player_number = random.choice(_intersect)
+                    self.moves.remove(player_number)
+                    self.my_play.append(player_number)
+                    return self.update_board(player_number, self.board)
+            else:
+                continue
+        self.easy_mode()
+
+    def easy_mode(self):
+        player_number = random.choice(self.moves)
+        self.moves.remove(player_number)
+        self.my_play.append(player_number)
+        return self.update_board(player_number, self.board)
 
     def update_board(self, value, board):
         for row in board:
@@ -87,7 +124,6 @@ class T3Game:
         return False
 
 
-trial = True
 while True:
     player1_name = input('Enter your name to play against Frontbot: ')
     try:
@@ -101,17 +137,19 @@ while True:
 
 player2_name = 'Frontbot'
 record = {player1_name: 0, player2_name: 0, 'draw': 0}
-
+trial = True
 while trial:
     template = [
         [1, 2, 3],
         [4, 5, 6],
         [7, 8, 9]
     ]
+
     turn = 9
+    frontbot_play = []
     my_list = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-    player1 = T3Game(player1_name, my_list, template, record, winning_check, player_id='X')
-    player2 = T3Game(player2_name, my_list, template, record, winning_check, player_id='O')
+    player1 = T3Game(player1_name, my_list, template, record, None, winning_check, player_id='X')
+    player2 = T3Game(player2_name, my_list, template, record, frontbot_play, winning_check, player_id='O')
     player = [player1, player2]
     a = random.choice([1, 0])
     b = 1 - a
