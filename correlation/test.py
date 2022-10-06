@@ -1,6 +1,8 @@
 # Test Program to test my correlation program
 import unittest
 import pearson_r
+
+
 # import spearman_r
 
 
@@ -16,7 +18,7 @@ class Test(unittest.TestCase):
             self.assertEqual(expectation, result)
 
     def test_for_iterable_data(self):
-        a = [{'a': 'a', 'b': 2}]
+        a = [{'a': 'a', 'b': 2}, {'a': [2, 3, '1', 4], 'b': [2, 4, 5, 6]}]
         for item in a:
             result = pearson_r.pearson_r(item)
             expectation = 'Check carefully, all data must be a real number!'
@@ -28,6 +30,16 @@ class Test(unittest.TestCase):
             result = pearson_r.pearson_r(invalid_input)
             expectation = 'Invalid data format: Data must be dict and have only two variables'
             self.assertEqual(expectation, result)
+
+    def test_unequal_num_of_variable_data(self):
+        a = {'a': [2, 3, 4], 'b': [2, 4, 5, 6]}
+        result = pearson_r.pearson_r(a)
+        expectation = '''
+        Invalid data pair! check to confirm each dependent variable
+        has a correspondent independent variable. If you mean none 
+        use 0 instead of a missing data.
+        '''
+        self.assertEqual(expectation, result)
 
 
 if __name__ == '__main__':
