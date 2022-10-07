@@ -68,11 +68,8 @@ def pearson_r(arg):
             y_denominator_diff = nth * sum_squared_y - math.pow(summation_y, 2)
             denominator = math.sqrt(x_denominator_diff * y_denominator_diff)
             return numerator / denominator
-        return '''
-        Invalid data pair! check to confirm each dependent variable
-        has a correspondent independent variable. If you mean none 
-        use 0 instead of a missing data.
-        '''
+        return 'Invalid data pair! Check to confirm each dependent variable has a correspondent independent variable.' \
+               ' If you mean none use 0 instead of a missing data.'
     except TypeError as err:
         if __name__ == '__main__':
             print(err)
