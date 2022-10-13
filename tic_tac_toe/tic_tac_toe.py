@@ -129,67 +129,68 @@ class T3Game:
         return False
 
 
-while True:
-    player1_name = input('Enter your name to play against Frontbot: ')
-    try:
-        if player1_name.lower() == 'frontbot':
-            raise ValueError('Oops! Frontbot is my name. Enter your name.')
-    except ValueError as err:
-        print(err)
-        continue
-    else:
-        break
-
-player2_name = 'Frontbot'
-record = {player1_name: 0, player2_name: 0, 'draw': 0}
-trial = True
-counter = random.choice([1, 0])
-while trial:
-    template = [
-        [1, 2, 3],
-        [4, 5, 6],
-        [7, 8, 9]
-    ]
-
-    turn = 9
-    frontbot_play_history = []
-    my_list = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-    player1 = T3Game(player1_name, my_list, template, record, winning_check, player_id='X')
-    player2 = T3Game(player2_name, my_list, template, record, winning_check, player_id='O',
-                     my_play_history=frontbot_play_history, mode='hard', )
-    player = [player1, player2]
-    counter += 1
-    a = counter % 2
-    b = 1 - a
-
-    while turn:
-        if turn % 2 == 0:
-            render_template(template)
-            print(player[a].movement())
-            turn -= 1
-            if player[a].check_status():
-                break
-            elif turn == 0:
-                record['draw'] += 1
-        else:
-            render_template(template)
-            print(player[b].movement())
-            turn -= 1
-            if player[b].check_status():
-                break
-            elif turn == 0:
-                record['draw'] += 1
-
-    render_template(template)
-    print(record)
+if __name__ == '__main__':
     while True:
-        play_again = input('do you want to play again?\nEnter Y to continue or N to stop: ')
-        if play_again.lower() == 'y' or play_again.lower() == 'yes':
-            trial = True
-            break
-        elif play_again.lower() == 'n' or play_again.lower() == 'no':
-            trial = False
-            break
-        else:
-            print('Invalid input!')
+        player1_name = input('Enter your name to play against Frontbot: ')
+        try:
+            if player1_name.lower() == 'frontbot':
+                raise ValueError('Oops! Frontbot is my name. Enter your name.')
+        except ValueError as err:
+            print(err)
             continue
+        else:
+            break
+
+    player2_name = 'Frontbot'
+    record = {player1_name: 0, player2_name: 0, 'draw': 0}
+    trial = True
+    counter = random.choice([1, 0])
+    while trial:
+        template = [
+            [1, 2, 3],
+            [4, 5, 6],
+            [7, 8, 9]
+        ]
+
+        turn = 9
+        frontbot_play_history = []
+        my_list = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        player1 = T3Game(player1_name, my_list, template, record, winning_check, player_id='X')
+        player2 = T3Game(player2_name, my_list, template, record, winning_check, player_id='O',
+                         my_play_history=frontbot_play_history, mode='hard', )
+        player = [player1, player2]
+        counter += 1
+        a = counter % 2
+        b = 1 - a
+
+        while turn:
+            if turn % 2 == 0:
+                render_template(template)
+                print(player[a].movement())
+                turn -= 1
+                if player[a].check_status():
+                    break
+                elif turn == 0:
+                    record['draw'] += 1
+            else:
+                render_template(template)
+                print(player[b].movement())
+                turn -= 1
+                if player[b].check_status():
+                    break
+                elif turn == 0:
+                    record['draw'] += 1
+
+        render_template(template)
+        print(record)
+        while True:
+            play_again = input('do you want to play again?\nEnter Y to continue or N to stop: ')
+            if play_again.lower() == 'y' or play_again.lower() == 'yes':
+                trial = True
+                break
+            elif play_again.lower() == 'n' or play_again.lower() == 'no':
+                trial = False
+                break
+            else:
+                print('Invalid input!')
+                continue
