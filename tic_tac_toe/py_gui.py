@@ -6,6 +6,8 @@ from PyQt5 import uic
 
 class TTTUI(QWidget):
     button = []
+    player_id = 'X'
+    frontbot_id = 'O'
     my_play_history = []
     random_set = [{1, 2, 3}, {4, 5, 6}, {7, 8, 9}, {1, 4, 7}, {2, 5, 8}, {3, 6, 9}, {1, 5, 9}, {3, 5, 7}]
 
@@ -29,7 +31,7 @@ class TTTUI(QWidget):
         message.addButton(QMessageBox.Abort)
         message.addButton(QMessageBox.Ok)
         message.setStyleSheet('background-color: rgb(170, 170, 127);')
-        if any_button.text() == 'X':
+        if any_button.text() == self.player_id:
             message.setText(f'Congratulations {self.player_name.text()}, you won!\nWould you like to play again?')
             self.score[self.player_name.text()] += 1
             self.player_score.setText(str(self.score[self.player_name.text()]))
@@ -37,7 +39,7 @@ class TTTUI(QWidget):
             if status == 1024:
                 return 'continue'
             return 'exit'
-        elif any_button.text() == 'O':
+        elif any_button.text() == self.frontbot_id:
             message.setText(f'OOps! Do better next time {self.player_name.text()}\nWould you like to play again?')
             self.score[self.frontbot.text()] += 1
             self.frontbot_score.setText(str(self.score[self.frontbot.text()]))
@@ -48,28 +50,28 @@ class TTTUI(QWidget):
 
     def check_winning(self):
         if (self.pushButton_1.text() == self.pushButton_2.text() == self.pushButton_3.text()) and \
-                (self.pushButton_3.text() == 'X' or self.pushButton_3.text() == 'O'):
+                (self.pushButton_3.text() == self.player_id or self.pushButton_3.text() == self.frontbot_id):
             return self.congratulatory_message(self.pushButton_2)
         if (self.pushButton_4.text() == self.pushButton_5.text() == self.pushButton_6.text()) and \
-                (self.pushButton_6.text() == 'X' or self.pushButton_6.text() == 'O'):
+                (self.pushButton_6.text() == self.player_id or self.pushButton_6.text() == self.frontbot_id):
             return self.congratulatory_message(self.pushButton_5)
         if (self.pushButton_7.text() == self.pushButton_8.text() == self.pushButton_9.text()) and \
-                (self.pushButton_9.text() == 'X' or self.pushButton_9.text() == 'O'):
+                (self.pushButton_9.text() == self.player_id or self.pushButton_9.text() == self.frontbot_id):
             return self.congratulatory_message(self.pushButton_8)
         if (self.pushButton_1.text() == self.pushButton_4.text() == self.pushButton_7.text()) and \
-                (self.pushButton_7.text() == 'X' or self.pushButton_7.text() == 'O'):
+                (self.pushButton_7.text() == self.player_id or self.pushButton_7.text() == self.frontbot_id):
             return self.congratulatory_message(self.pushButton_4)
         if (self.pushButton_2.text() == self.pushButton_5.text() == self.pushButton_8.text()) and \
-                (self.pushButton_8.text() == 'X' or self.pushButton_8.text() == 'O'):
+                (self.pushButton_8.text() == self.player_id or self.pushButton_8.text() == self.frontbot_id):
             return self.congratulatory_message(self.pushButton_5)
         if (self.pushButton_3.text() == self.pushButton_6.text() == self.pushButton_9.text()) and \
-                (self.pushButton_9.text() == 'X' or self.pushButton_9.text() == 'O'):
+                (self.pushButton_9.text() == self.player_id or self.pushButton_9.text() == self.frontbot_id):
             return self.congratulatory_message(self.pushButton_6)
         if (self.pushButton_1.text() == self.pushButton_5.text() == self.pushButton_9.text()) and \
-                (self.pushButton_9.text() == 'X' or self.pushButton_9.text() == 'O'):
+                (self.pushButton_9.text() == self.player_id or self.pushButton_9.text() == self.frontbot_id):
             return self.congratulatory_message(self.pushButton_5)
         if (self.pushButton_3.text() == self.pushButton_5.text() == self.pushButton_7.text()) and \
-                (self.pushButton_7.text() == 'X' or self.pushButton_7.text() == 'O'):
+                (self.pushButton_7.text() == self.player_id or self.pushButton_7.text() == self.frontbot_id):
             return self.congratulatory_message(self.pushButton_5)
 
     def play(self, play_first):
@@ -91,7 +93,7 @@ class TTTUI(QWidget):
             n = self_list.index(_i)
             my_list.remove(_i)
             self.my_play_history.append(_i)
-            self.button[n].setText('O')
+            self.button[n].setText(self.frontbot_id)
             return 0
 
         if frontbot_start:
@@ -112,7 +114,7 @@ class TTTUI(QWidget):
             if not btn.text():
                 if index not in history:
                     history.append(index)
-                    btn.setText('X')
+                    btn.setText(self.player_id)
                     my_list.remove(self_list[index])
 
                     status = self.check_winning()
@@ -144,16 +146,20 @@ class TTTUI(QWidget):
                                     if x not in self.my_play_history and y not in self.my_play_history:
                                         update_items(_intersect[0])
                                         return 0
-                                elif len(_intersect) == 2:
-                                    x = item - set(my_list)
-                                    if x in self.my_play_history:
-                                        y, z = _intersect
-                                        if y in my_list and z in my_list:
-                                            player_number = random.choice(_intersect)
-                                            update_items(player_number)
-                                            return 0
-                                else:
-                                    continue
+                            a = random.choice([1, 5, 7, 2, 3])
+                            if a == 2:
+                                for item in self.random_set:
+                                    _intersect = list(item & set(my_list))
+                                    if len(_intersect) == 2:
+                                        x = list(item - set(my_list))
+                                        if x[0] in self.my_play_history:
+                                            y, z = _intersect
+                                            if y in my_list and z in my_list:
+                                                player_number = random.choice(_intersect)
+                                                update_items(player_number)
+                                                return 0
+                                    else:
+                                        continue
                             easy_mode()
                             return 0
                         except IndexError:
