@@ -72,7 +72,7 @@ class TTTUI(QWidget):
                 (self.pushButton_7.text() == 'X' or self.pushButton_7.text() == 'O'):
             return self.congratulatory_message(self.pushButton_5)
 
-    def play(self):
+    def play(self, play_first):
         self.score['trial'] += 1
         self.trial_num.setText(str(self.score['trial'] - 1))
         self.player_score.setText(str(self.score[self.player_name.text()]))  # keeping score track
@@ -81,7 +81,7 @@ class TTTUI(QWidget):
         history = []
         my_list = [1, 2, 3, 4, 5, 6, 7, 8, 9]
         self_list = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-        frontbot_start = random.choice([True, False])
+        frontbot_start = play_first
 
         def easy_mode():
             i = random.choice(my_list)
@@ -152,7 +152,6 @@ class TTTUI(QWidget):
                                             player_number = random.choice(_intersect)
                                             update_items(player_number)
                                             return 0
-
                                 else:
                                     continue
                             easy_mode()
@@ -170,16 +169,19 @@ class TTTUI(QWidget):
 
 
 turn = True
+starter = random.choice([True, False])
 score_board = {'Frontbot': 0, 'Priscilla': 0, 'trial': 0}
 
 
-def main():
+def main(arg_starting_player):
     app = QApplication(sys.argv)
     window = TTTUI('Priscilla', score_board, mode='hard')
-    window.play()
+    window.play(arg_starting_player)
     app.exec_()
 
 
 if __name__ == '__main__':
     while turn:
-        main()
+        starter = not starter
+        starting_player = starter
+        main(starting_player)
